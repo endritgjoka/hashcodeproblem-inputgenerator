@@ -1,163 +1,99 @@
-<script setup>
-import { ref } from "vue";
-
-const numBooks = ref("");
-const numLibraries = ref("");
-const numDays = ref("");
-const generatedOutput = ref("");
-const showModal = ref(false);
-
-const generateOutput = () => {
-  const books = parseInt(numBooks.value);
-  const libraries = parseInt(numLibraries.value);
-  const days = parseInt(numDays.value);
-
-  if (isNaN(books) || isNaN(libraries) || isNaN(days) || books < 1 || libraries < 1 || days < 1) {
-    alert("Please enter valid positive numbers.");
-    return;
-  }
-
-  let output = [];
-  output.push(`${books} ${libraries} ${days}`);
-
-  let bookScores = Array.from({ length: books }, () => Math.floor(Math.random() * 100) + 1);
-  output.push(bookScores.join(" "));
-
-  for (let i = 0; i < libraries; i++) {
-    let numBooksInLib = Math.min(Math.floor(Math.random() * books) + 1, books);
-    let signupTime = Math.floor(Math.random() * Math.max(1, days / 2)) + 1;
-    let booksPerDay = Math.floor(Math.random() * Math.max(1, numBooksInLib / 2)) + 1;
-
-    let libraryBooks = [...Array(books).keys()]
-        .sort(() => 0.5 - Math.random())
-        .slice(0, numBooksInLib);
-
-    output.push(`${numBooksInLib} ${signupTime} ${booksPerDay}`);
-    output.push(libraryBooks.join(" "));
-  }
-
-  generatedOutput.value = output.join("\n");
-  showModal.value = true;
-};
-
-
-const copyToClipboard = () => {
-  navigator.clipboard.writeText(generatedOutput.value);
-  alert("Copied to clipboard!");
-};
-
-const exportTxt = () => {
-  const blob = new Blob([generatedOutput.value], { type: "text/plain" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "hashcode_input.txt";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-</script>
-
 <template>
-  <div class="container">
-    <h2>Google Hash Code 2020 Input Generator</h2>
+  <div class="flex flex-col items-center justify-center p-6 bg-gray-100 min-h-screen">
+    <div class="w-full max-w-lg bg-white p-10 rounded-lg shadow-lg">
+      <h1 class="text-2xl font-bold text-gray-800 mb-4 text-center">Google Hash Code Input Generator</h1>
 
-    <div class="input-container">
-      <label>Number of Books:</label>
-      <input v-model="numBooks" type="number" min="1" required />
+      <form @submit.prevent="generateOutput" class="space-y-4">
+        <!-- Number of Books -->
+        <div>
+          <label class="block text-gray-700 font-semibold">Number of Books</label>
+          <input v-model="numBooks" type="number" min="1" required class="w-full p-2 border rounded-lg focus:ring focus:ring-green-300" />
+        </div>
 
-      <label>Number of Libraries:</label>
-      <input v-model="numLibraries" type="number" min="1" required />
+        <!-- Number of Libraries -->
+        <div>
+          <label class="block text-gray-700 font-semibold">Number of Libraries</label>
+          <input v-model="numLibraries" type="number" min="1" required class="w-full p-2 border rounded-lg focus:ring focus:ring-green-300" />
+        </div>
 
-      <label>Number of Days for Scanning:</label>
-      <input v-model="numDays" type="number" min="1" required />
+        <!-- Number of Days -->
+        <div>
+          <label class="block text-gray-700 font-semibold">Number of Days</label>
+          <input v-model="numDays" type="number" min="1" required class="w-full p-2 border rounded-lg focus:ring focus:ring-green-300" />
+        </div>
 
-      <button @click="generateOutput">Generate Output</button>
+        <button type="submit" class="w-full bg-green-500 text-white py-2 mt-4 rounded-lg hover:bg-green-600 transition">
+          Generate
+        </button>
+      </form>
     </div>
 
-    <div v-if="showModal" class="modal">
-      <div class="modal-content">
-        <h3>Generated Output</h3>
-        <pre>{{ generatedOutput }}</pre>
-        <button @click="copyToClipboard">Copy</button>
-        <button @click="exportTxt">Export as .txt</button>
-        <button @click="showModal = false">Close</button>
+    <!-- Modal -->
+    <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-opacity-50 p-4">
+      <div class="bg-white p-6 rounded-lg shadow-lg max-w-xl w-full">
+        <h2 class="text-xl font-semibold text-gray-800">Generated Output</h2>
+        <pre class="bg-gray-100 p-3 rounded-lg mt-2 overflow-auto max-h-60">{{ generatedOutput }}</pre>
+
+        <div class="flex justify-end space-x-2 mt-4">
+          <button @click="copyToClipboard" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Copy</button>
+          <button @click="exportTxt" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600">Export</button>
+          <button @click="showModal = false" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">Close</button>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped>
-.container {
-  text-align: center;
-  max-width: 400px;
-  margin: 20px auto;
-  padding: 20px;
-  border-radius: 8px;
-  background: #666161;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
+<script>
+export default {
+  data() {
+    return {
+      numBooks: "",
+      numLibraries: "",
+      numDays: "",
+      generatedOutput: "",
+      showModal: false,
+      errors: {
+        numBooks: "",
+        numLibraries: "",
+        numDays: "",
+      },
+    };
+  },
+  methods: {
+    generateOutput() {
+      const books = parseInt(this.numBooks);
+      const libraries = parseInt(this.numLibraries);
+      const days = parseInt(this.numDays);
 
-.input-group {
-  margin-bottom: 15px;
-}
+      let output = [`${books} ${libraries} ${days}`];
+      let bookScores = Array.from({ length: books }, () => Math.floor(Math.random() * 100) + 1);
+      output.push(bookScores.join(" "));
 
-label {
-  display: block;
-  font-weight: bold;
-}
+      for (let i = 0; i < libraries; i++) {
+        let numBooksInLib = Math.min(Math.floor(Math.random() * books) + 1, books);
+        let signupTime = Math.floor(Math.random() * Math.max(1, days / 2)) + 1;
+        let booksPerDay = Math.floor(Math.random() * Math.max(1, numBooksInLib / 2)) + 1;
+        let libraryBooks = [...Array(books).keys()].sort(() => 0.5 - Math.random()).slice(0, numBooksInLib);
+        output.push(`${numBooksInLib} ${signupTime} ${booksPerDay}`);
+        output.push(libraryBooks.join(" "));
+      }
 
-input {
-  width: 100%;
-  padding: 8px;
-  font-size: 16px;
-  margin-top: 5px;
-}
-
-button {
-  background: #42b883;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  margin-top: 10px;
-  cursor: pointer;
-  font-size: 16px;
-  border-radius: 5px;
-}
-
-button:hover {
-  background: #36996f;
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-}
-
-.modal-content {
-  background: #918c8c;
-  padding: 20px;
-  border-radius: 8px;
-  text-align: left;
-  max-width: 90%;
-  max-height: 80%;
-  overflow: auto;
-  white-space: pre-wrap; 
-}
-
-pre {
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
-
-.modal-buttons button {
-  margin: 5px;
-}
-</style>
+      this.generatedOutput = output.join("\n");
+      this.showModal = true;
+    },
+    copyToClipboard() {
+      navigator.clipboard.writeText(this.generatedOutput).then(() => alert("Copied to clipboard!"));
+    },
+    exportTxt() {
+      const blob = new Blob([this.generatedOutput], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "hashcode_input.txt";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    },
+  },
+};
+</script>
