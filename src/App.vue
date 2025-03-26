@@ -1,25 +1,28 @@
 <template>
   <div class="flex flex-col items-center justify-center p-6 bg-gray-100 min-h-screen bg-cover bg-no-repeat bg-center"
-       style="background-image: url('hashcode_problem.png')">
+      >
     <div class="w-full max-w-xl bg-white p-14 rounded-xl shadow-2xl">
+      <div class="flex justify-center mb-8">
+        <img class="w-1/2 h-1/2" src="/hashcode_problem.png" alt="logo" />
+      </div>
       <h1 class="text-2xl font-bold text-gray-800 mb-8 text-center">Google Hash Code Input Generator</h1>
 
       <form @submit.prevent="generateInput" class="space-y-4">
         <div>
           <label class="block text-gray-700 font-semibold">Number of Books</label>
-          <input v-model="numBooks" type="number" min="1" required
+          <input v-model="numBooks" type="number" min="1" max="100000" required
                  class="w-full p-2 border rounded-lg focus:ring focus:ring-green-300"/>
         </div>
 
         <div>
           <label class="block text-gray-700 font-semibold">Number of Libraries</label>
-          <input v-model="numLibraries" type="number" min="1" required
+          <input v-model="numLibraries" type="number" min="1" max="100000" required
                  class="w-full p-2 border rounded-lg focus:ring focus:ring-green-300"/>
         </div>
 
         <div>
           <label class="block text-gray-700 font-semibold">Number of Days</label>
-          <input v-model="numDays" type="number" min="1" required
+          <input v-model="numDays" type="number" min="1" max="100000" required
                  class="w-full p-2 border rounded-lg focus:ring focus:ring-green-300"/>
         </div>
 
@@ -71,7 +74,7 @@ export default {
       const days = parseInt(this.numDays);
 
       let output = [`${books} ${libraries} ${days}`];
-      let bookScores = Array.from({length: books}, () => Math.floor(Math.random() * 100) + 1);
+      let bookScores = Array.from({length: books}, () => Math.floor(Math.random() * 1000) + 1);
       output.push(bookScores.join(" "));
 
       for (let i = 0; i < libraries; i++) {
@@ -82,7 +85,6 @@ export default {
         output.push(`${numBooksInLib} ${signupTime} ${booksPerDay}`);
         output.push(libraryBooks.join(" "));
       }
-
       this.generatedInput = output.join("\n");
       this.showModal = true;
     },
