@@ -5,7 +5,7 @@
       <div class="flex justify-center mb-8">
         <img class="w-1/2 h-1/2" src="/hashcode_problem.png" alt="logo" />
       </div>
-      <h1 class="text-2xl font-bold text-gray-800 mb-8 text-center">Google Hash Code Input Generator</h1>
+      <h1 class="text-2xl font-bold text-gray-800 mb-8 text-center">Book Scanning Problem - Input Generator</h1>
 
       <form @submit.prevent="generateInput" class="space-y-4">
         <div>
