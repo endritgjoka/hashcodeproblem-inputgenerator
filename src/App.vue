@@ -1,7 +1,6 @@
 <script setup>
 import { ref, reactive, onBeforeUnmount, nextTick } from 'vue';
 
-// --- Refs for Input Values ---
 const numBooks = ref(10000);
 const numLibraries = ref(100);
 const numDays = ref(1000);
@@ -14,7 +13,6 @@ const signupTimeMax = ref(10);
 const booksPerDayMin = ref(1);
 const booksPerDayMax = ref(100);
 
-// --- Refs for Input Elements (needed for setCustomValidity) ---
 const numBooksRef = ref(null);
 const booksPerLibraryMinRef = ref(null);
 const booksPerLibraryMaxRef = ref(null);
@@ -25,7 +23,7 @@ const signupTimeMaxRef = ref(null);
 const booksPerDayMinRef = ref(null);
 const booksPerDayMaxRef = ref(null);
 const formRef = ref(null); 
-// --- State (unchanged) ---
+
 const generatedInput = ref("");
 const showModal = ref(false);
 const isLoading = ref(false);
@@ -37,7 +35,6 @@ const elapsedTime = ref(0);
 const timerInterval = ref(null);
 
 
-// --- Timer Functions --- (unchanged)
 function stopTimer() {
     if (timerInterval.value) {
         clearInterval(timerInterval.value);
@@ -54,7 +51,6 @@ function startTimer() {
     }, 100);
 }
 
-// --- Worker Termination --- (unchanged)
 function terminateWorker() {
     if (worker.value) {
         console.log("Terminating worker...");
@@ -64,7 +60,6 @@ function terminateWorker() {
     }
 }
 
-// --- Custom Cross-Field Validation Logic ---
 function checkCrossFieldValidity(fieldName) {
     nextTick(() => {
         bookScoreMinRef.value?.setCustomValidity('');
@@ -107,7 +102,6 @@ function checkCrossFieldValidity(fieldName) {
 }
 
 
-// --- Submit Handling ---
 function handleFormSubmit() {
     statusMessage.value = ''; 
     isError.value = false;
@@ -124,7 +118,6 @@ function handleFormSubmit() {
     triggerGeneration();
 }
 
-// --- Generation Logic ---
 function triggerGeneration() {
   if (isLoading.value) return;
 
@@ -185,16 +178,15 @@ function triggerGeneration() {
   }
 }
 
-// --- Cancellation --- (unchanged)
 function cancelGeneration() {
+  console.log("This is cancel...")
     if (!isLoading.value || !worker.value) { console.log("Cancel invalid state."); return; }
     console.log("%c Cancelling generation...", "color: red; font-weight: bold;");
     isCancelled.value = true; terminateWorker(); stopTimer();
-    isLoading.value = false; statusMessage.value = "Generation cancelled.";
+    isLoading.value = false;
     isError.value = false; console.log("%c Cancelled.", "color: red;");
 }
 
-// --- Other Methods --- (unchanged)
 function closeModal() { showModal.value = false; }
 function copyToClipboard() {
    if (!generatedInput.value) return;
@@ -214,7 +206,6 @@ function exportTxt() {
    } catch (err) { console.error("Export failed:", err); statusMessage.value = "Export failed."; isError.value = true; showModal.value = false; }
 }
 
-// --- Lifecycle Hook --- (unchanged)
 onBeforeUnmount(() => { stopTimer(); terminateWorker(); });
 </script>
 
@@ -224,15 +215,15 @@ onBeforeUnmount(() => { stopTimer(); terminateWorker(); });
       <div class="flex justify-center mb-4">
         <img class="w-2/3 sm:w-1/2 h-auto max-h-24 object-contain" src="/hashcode_problem.png" alt="logo" />
       </div>
-      <h1 class="text-xl sm:text-2xl font-bold text-gray-100 mb-5 text-center">Book Scanning Problem - Input Generator</h1>
+      <h1 class="text-xl sm:text-2xl font-bold text-gray-100 mb-5 text-center">Book Scanning - Input Generator</h1>
 
-      <fieldset :disabled="isLoading" class="space-y-1"> 
+      <fieldset class="space-y-1"> 
         <form @submit.prevent="handleFormSubmit" id="generation-form" ref="formRef" novalidate>
 
           <div class="flex flex-col sm:flex-row sm:space-x-4 space-y-3 sm:space-y-0">
              <div class="flex-1">
                 <label for="numBooks" class="block text-gray-300 font-semibold mb-1 text-sm sm:text-base">Books</label>
-                <input id="numBooks" ref="numBooksRef"
+                <input  :disabled="isLoading" id="numBooks" ref="numBooksRef"
                        v-model.number="numBooks" @input="checkCrossFieldValidity('numBooks')" @blur="checkCrossFieldValidity('numBooks')"
                        type="number" min="1" max="100000" required
                        class="w-full p-2 bg-gray-700 border border-gray-600 text-gray-100 rounded-lg placeholder-gray-400 disabled:opacity-50
@@ -242,7 +233,7 @@ onBeforeUnmount(() => { stopTimer(); terminateWorker(); });
              </div>
              <div class="flex-1">
                 <label for="numLibraries" class="block text-gray-300 font-semibold mb-1 text-sm sm:text-base">Libraries</label>
-                <input id="numLibraries" v-model.number="numLibraries" type="number" min="1" max="100000" required
+                <input  :disabled="isLoading" id="numLibraries" v-model.number="numLibraries" type="number" min="1" max="100000" required
                        class="w-full p-2 bg-gray-700 border border-gray-600 text-gray-100 rounded-lg placeholder-gray-400 disabled:opacity-50
                               focus:ring focus:ring-green-500 focus:border-green-500
                               invalid:border-red-500 invalid:ring-red-500 invalid:text-red-400"/>
@@ -250,7 +241,7 @@ onBeforeUnmount(() => { stopTimer(); terminateWorker(); });
              </div>
              <div class="flex-1">
                 <label for="numDays" class="block text-gray-300 font-semibold mb-1 text-sm sm:text-base">Days</label>
-                <input id="numDays" v-model.number="numDays" type="number" min="1" max="100000" required
+                <input  :disabled="isLoading" id="numDays" v-model.number="numDays" type="number" min="1" max="100000" required
                        class="w-full p-2 bg-gray-700 border border-gray-600 text-gray-100 rounded-lg placeholder-gray-400 disabled:opacity-50
                               focus:ring focus:ring-green-500 focus:border-green-500
                               invalid:border-red-500 invalid:ring-red-500 invalid:text-red-400"/>
@@ -262,13 +253,13 @@ onBeforeUnmount(() => { stopTimer(); terminateWorker(); });
               <div class="flex-1">
                  <label class="block text-gray-300 font-semibold mb-1 text-sm sm:text-base">Book Score Range</label>
                  <div class="flex space-x-2">
-                    <input id="bookScoreMin" ref="bookScoreMinRef"
+                    <input  :disabled="isLoading" id="bookScoreMin" ref="bookScoreMinRef"
                            v-model.number="bookScoreMin" @input="checkCrossFieldValidity('bookScoreMin')" @blur="checkCrossFieldValidity('bookScoreMin')"
                            type="number" placeholder="Min" required min="1" max="1000"
                            class="w-1/2 p-2 bg-gray-700 border border-gray-600 text-gray-100 rounded-lg placeholder-gray-400 disabled:opacity-50
                                   focus:ring focus:ring-green-500 focus:border-green-500
                                   invalid:border-red-500 invalid:ring-red-500 invalid:text-red-400"/>
-                    <input id="bookScoreMax" ref="bookScoreMaxRef"
+                    <input  :disabled="isLoading" id="bookScoreMax" ref="bookScoreMaxRef"
                            v-model.number="bookScoreMax" @input="checkCrossFieldValidity('bookScoreMax')" @blur="checkCrossFieldValidity('bookScoreMax')"
                            type="number" placeholder="Max" required min="1" max="1000"
                            class="w-1/2 p-2 bg-gray-700 border border-gray-600 text-gray-100 rounded-lg placeholder-gray-400 disabled:opacity-50
@@ -280,13 +271,13 @@ onBeforeUnmount(() => { stopTimer(); terminateWorker(); });
               <div class="flex-1">
                  <label class="block text-gray-300 font-semibold mb-1 text-sm sm:text-base">Books Per Library Range</label>
                  <div class="flex space-x-2">
-                    <input id="booksPerLibraryMin" ref="booksPerLibraryMinRef"
+                    <input  :disabled="isLoading" id="booksPerLibraryMin" ref="booksPerLibraryMinRef"
                            v-model.number="booksPerLibraryMin" @input="checkCrossFieldValidity('booksPerLibraryMin')" @blur="checkCrossFieldValidity('booksPerLibraryMin')"
                            type="number" placeholder="Min" required min="1" max="1000"
                            class="w-1/2 p-2 bg-gray-700 border border-gray-600 text-gray-100 rounded-lg placeholder-gray-400 disabled:opacity-50
                                   focus:ring focus:ring-green-500 focus:border-green-500
                                   invalid:border-red-500 invalid:ring-red-500 invalid:text-red-400"/>
-                    <input id="booksPerLibraryMax" ref="booksPerLibraryMaxRef"
+                    <input  :disabled="isLoading" id="booksPerLibraryMax" ref="booksPerLibraryMaxRef"
                            v-model.number="booksPerLibraryMax" @input="checkCrossFieldValidity('booksPerLibraryMax')" @blur="checkCrossFieldValidity('booksPerLibraryMax')"
                            type="number" placeholder="Max" required min="10" max="1000"
                            class="w-1/2 p-2 bg-gray-700 border border-gray-600 text-gray-100 rounded-lg placeholder-gray-400 disabled:opacity-50
@@ -301,13 +292,13 @@ onBeforeUnmount(() => { stopTimer(); terminateWorker(); });
               <div class="flex-1">
                  <label class="block text-gray-300 font-semibold mb-1 text-sm sm:text-base">Sign-Up Time Range</label>
                  <div class="flex space-x-2">
-                    <input id="signupTimeMin" ref="signupTimeMinRef"
+                    <input  :disabled="isLoading" id="signupTimeMin" ref="signupTimeMinRef"
                            v-model.number="signupTimeMin" @input="checkCrossFieldValidity('signupTimeMin')" @blur="checkCrossFieldValidity('signupTimeMin')"
                            type="number" placeholder="Min" required min="1" max="10"
                            class="w-1/2 p-2 bg-gray-700 border border-gray-600 text-gray-100 rounded-lg placeholder-gray-400 disabled:opacity-50
                                   focus:ring focus:ring-green-500 focus:border-green-500
                                   invalid:border-red-500 invalid:ring-red-500 invalid:text-red-400"/>
-                    <input id="signupTimeMax" ref="signupTimeMaxRef"
+                    <input  :disabled="isLoading" id="signupTimeMax" ref="signupTimeMaxRef"
                            v-model.number="signupTimeMax" @input="checkCrossFieldValidity('signupTimeMax')" @blur="checkCrossFieldValidity('signupTimeMax')"
                            type="number" placeholder="Max" required min="1" max="10"
                            class="w-1/2 p-2 bg-gray-700 border border-gray-600 text-gray-100 rounded-lg placeholder-gray-400 disabled:opacity-50
@@ -319,13 +310,13 @@ onBeforeUnmount(() => { stopTimer(); terminateWorker(); });
               <div class="flex-1">
                  <label class="block text-gray-300 font-semibold mb-1 text-sm sm:text-base">Books Shipped / Day Range</label>
                  <div class="flex space-x-2">
-                    <input id="booksPerDayMin" ref="booksPerDayMinRef"
+                    <input  :disabled="isLoading" id="booksPerDayMin" ref="booksPerDayMinRef"
                            v-model.number="booksPerDayMin" @input="checkCrossFieldValidity('booksPerDayMin')" @blur="checkCrossFieldValidity('booksPerDayMin')"
                            type="number" placeholder="Min" required min="1" max="100"
                            class="w-1/2 p-2 bg-gray-700 border border-gray-600 text-gray-100 rounded-lg placeholder-gray-400 disabled:opacity-50
                                   focus:ring focus:ring-green-500 focus:border-green-500
                                   invalid:border-red-500 invalid:ring-red-500 invalid:text-red-400"/>
-                    <input id="booksPerDayMax" ref="booksPerDayMaxRef"
+                    <input  :disabled="isLoading" id="booksPerDayMax" ref="booksPerDayMaxRef"
                            v-model.number="booksPerDayMax" @input="checkCrossFieldValidity('booksPerDayMax')" @blur="checkCrossFieldValidity('booksPerDayMax')"
                            type="number" placeholder="Max" required min="1" max="100"
                            class="w-1/2 p-2 bg-gray-700 border border-gray-600 text-gray-100 rounded-lg placeholder-gray-400 disabled:opacity-50
