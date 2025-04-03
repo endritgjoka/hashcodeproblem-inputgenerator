@@ -357,7 +357,7 @@ onBeforeUnmount(() => { stopTimer(); terminateWorker(); });
 
     </div>
 
-    <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 p-4 backdrop-blur-sm z-50" @click.self="closeModal">
+    <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 p-4 backdrop-blur-sm z-50">
       <div class="relative bg-gray-800 p-6 rounded-lg shadow-xl max-w-2xl w-full border border-gray-700 flex flex-col" style="max-height: 90vh;">
         <button @click="closeModal" title="Close" class="absolute top-3 right-3 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full p-1.5 transition duration-150 ease-in-out z-10">
            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"> <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /> </svg>
