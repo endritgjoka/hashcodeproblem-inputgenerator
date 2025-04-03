@@ -282,7 +282,7 @@ onBeforeUnmount(() => { stopTimer(); terminateWorker(); });
                  <div class="flex space-x-2">
                     <input id="booksPerLibraryMin" ref="booksPerLibraryMinRef"
                            v-model.number="booksPerLibraryMin" @input="checkCrossFieldValidity('booksPerLibraryMin')" @blur="checkCrossFieldValidity('booksPerLibraryMin')"
-                           type="number" placeholder="Min" required min="10" max="1000"
+                           type="number" placeholder="Min" required min="1" max="1000"
                            class="w-1/2 p-2 bg-gray-700 border border-gray-600 text-gray-100 rounded-lg placeholder-gray-400 disabled:opacity-50
                                   focus:ring focus:ring-green-500 focus:border-green-500
                                   invalid:border-red-500 invalid:ring-red-500 invalid:text-red-400"/>
