@@ -94,7 +94,6 @@ function applyPreset(preset) {
     isMenuOpen.value = false;
 }
 
-
 function stopTimer() {
     if (timerInterval.value) {
         clearInterval(timerInterval.value);
@@ -130,7 +129,6 @@ function checkCrossFieldValidity(fieldName) {
         booksPerDayMaxRef.value?.setCustomValidity('');
         numBooksRef.value?.setCustomValidity('');
 
-
         if (bookScoreMin.value > bookScoreMax.value) {
             bookScoreMinRef.value?.setCustomValidity('Min cannot be greater than Max.');
             bookScoreMaxRef.value?.setCustomValidity('Max cannot be less than Min.');
@@ -155,10 +153,8 @@ function checkCrossFieldValidity(fieldName) {
          if (booksPerLibraryMax.value > numBooks.value) {
             booksPerLibraryMaxRef.value?.setCustomValidity(`Cannot exceed total books (${numBooks.value}).`);
         }
-
     });
 }
-
 
 function handleFormSubmit() {
     statusMessage.value = '';
@@ -255,13 +251,26 @@ function copyToClipboard() {
        .then(() => alert("Copied!"))
        .catch(err => { console.error('Copy failed: ', err); statusMessage.value = "Copy failed."; isError.value = true; showModal.value = false; });
 }
+
+function formatNumberWithK(num) {
+  if (num >= 1000) {
+    return Math.floor(num / 1000) + 'k';
+  }
+  return String(num);
+}
+
 function exportTxt() {
    if (!generatedInput.value) return;
    try {
        const blob = new Blob([generatedInput.value], { type: "text/plain;charset=utf-8" });
        const link = document.createElement("a");
        link.href = URL.createObjectURL(blob);
-       link.download = `hashcode_${numBooks.value || 'N'}B_${numLibraries.value || 'N'}L_${numDays.value || 'N'}D.txt`;
+
+       const formattedBooks = formatNumberWithK(numBooks.value);
+       const formattedLibraries = formatNumberWithK(numLibraries.value);
+       const formattedDays = formatNumberWithK(numDays.value);
+
+       link.download = `B${formattedBooks}_L${formattedLibraries}_D${formattedDays}.in`;
        document.body.appendChild(link); link.click(); document.body.removeChild(link);
        URL.revokeObjectURL(link.href);
    } catch (err) { console.error("Export failed:", err); statusMessage.value = "Export failed."; isError.value = true; showModal.value = false; }
@@ -447,7 +456,6 @@ onBeforeUnmount(() => { stopTimer(); terminateWorker(); });
           <p v-if="isLoading" class="text-center text-xs text-gray-400 mb-3">{{ generationProgress.toFixed(0) }}%
             Complete</p>
 
-
           <p v-if="statusMessage"
             :class="{'text-red-400': isError, 'text-green-400': !isError && statusMessage.includes('successful'), 'text-yellow-500': statusMessage.includes('cancelled'), 'text-gray-400': !isError && !statusMessage.includes('successful') && !statusMessage.includes('cancelled')}"
             class="text-center mt-4 text-sm min-h-[1.25em]">
@@ -455,7 +463,6 @@ onBeforeUnmount(() => { stopTimer(); terminateWorker(); });
           </p>
 
         </div>
-
 
         <div v-if="isMenuOpen"
           class="w-72 flex-shrink-0 bg-gray-800 shadow-lg rounded-xl z-20 p-4 max-h-[calc(100vh-theme(spacing.12))] overflow-y-auto presets-scrollbar"
@@ -485,7 +492,6 @@ onBeforeUnmount(() => { stopTimer(); terminateWorker(); });
       </div>
 
     </div>
-
 
     <div v-if="showModal"
       class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 p-4 backdrop-blur-sm z-50">
