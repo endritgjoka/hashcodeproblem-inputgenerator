@@ -42,7 +42,7 @@ const isCustomConfig = ref(true);
 
 const presets = reactive([
   {
-    name: "Appalachian Regional Library Project", emoji: "📚",
+    name: "Appalachian Regional Project", emoji: "📚",
     description: "A grassroots digitization effort focused on preserving regional history in rural Appalachian communities. Involves 3 small public libraries with limited archival collections (~2,500 books total). Using portable overhead scanners (e.g., CZUR ET series), operated by volunteers or interns. The project is scheduled over 3 months (90 days), allowing time for training and modest daily throughput (~40–150 books/day). Designed to capture local heritage without overwhelming resources.",
     values: {
       numBooks: 2500,
@@ -481,7 +481,7 @@ onBeforeUnmount(() => { stopTimer(); terminateWorker(); });
 
               <div class="flex flex-col sm:flex-row sm:space-x-4 space-y-3 sm:space-y-0 mt-3">
                 <div class="flex-1">
-                  <label class="block text-gray-300 font-semibold mb-1 text-sm sm:text-base">Library Sign-Up (days)</label>
+                  <label class="block text-gray-300 font-semibold mb-1 text-sm sm:text-base">Sign-Up Days Range</label>
                   <div class="flex space-x-2">
                     <input :disabled="isLoading" id="signupTimeMin" ref="signupTimeMinRef"
                       v-model.number="signupTimeMin" @input="markAsCustom(); checkCrossFieldValidity('signupTimeMin')"
@@ -499,7 +499,7 @@ onBeforeUnmount(() => { stopTimer(); terminateWorker(); });
                   <div class="h-3"></div>
                 </div>
                 <div class="flex-1">
-                  <label class="block text-gray-300 font-semibold mb-1 text-sm sm:text-base">Scan Rate (books/day)</label>
+                  <label class="block text-gray-300 font-semibold mb-1 text-sm sm:text-base">Scan Rate Range</label>
                   <div class="flex space-x-2">
                     <input :disabled="isLoading" id="booksPerDayMin" ref="booksPerDayMinRef"
                       v-model.number="booksPerDayMin" @input="markAsCustom(); checkCrossFieldValidity('booksPerDayMin')"
